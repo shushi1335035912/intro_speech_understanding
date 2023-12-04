@@ -1,44 +1,80 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
-def minimum_Fs(f):
+def center_of_gravity(x):
     '''
-    Find the lowest sampling frequency that would avoid aliasing for a pure tone at f Hz.
+    Find the center of gravity of a vector, x.
+    If x=[x0,x1,...,xn], then you should return
+    c = ( 0*x0 + 1*x1 + 2*x2 + ... + n*xn ) / sum(x)
+    where n = len(x)-1.
+    
+    Recommended method: use np.arange, np.dot, and np.sum.
     
     @param:
-    f (scalar): frequency in Hz (cycles/second)
+    x (array): a 1d numpy array
     
     @result:
-    Fs (scalar): the lowest sampling frequency (samples/second) that would
-    not cause aliasing at a tone of f Hz.
+    c (scalar): x's center of gravity
     '''
-    Fs = 0  # change this line
-    return Fs
+    n = len(x) - 1  # Calculating n
+    indices = np.arange(n + 1)  # Generating indices from 0 to n
+    numerator = np.dot(indices, x)  # Dot product of indices and x
+    
+    c = numerator / np.sum(x)  # Calculating the center of gravity
+    return c
 
-def omega(f, Fs):
+print('c = ', center_of_gravity([1, 2, 3, 2, 1]))
+
+def matched_identity(x):
     '''
-    Find the radial frequency (omega) that matches a given f and Fs.
+    Create an identity matrix that has the same number of rows as x has elements.
+    Hint: use len(x), and use np.eye.
     
     @param:
-    f (scalar): frequency in Hz (cycles/second)
-    Fs (scalar): sampling frequency in samples/second
+    x (array): a 1d numpy array, of length N
     
     @result:
-    omega (scalar): radial frequency in radians/sample
+    I (array): a 2d numpy array: an NxN identity matrix
     '''
-    omega = 0  # change this line
-    return omega
+    N = len(x)  # Get the length of the input array x
+    I = np.eye(N)  # Create an NxN identity matrix using np.eye
+    
+    return I
 
-def pure_tone(omega, N):
+print('I = \n', matched_identity([1, 2, 3, 2, 1]))
+
+def sine_and_cosine(t_start, t_end, t_steps):
     '''
-    Create a pure tone of N samples at omega radians/sample.
+    Create a time axis, and compute its cosine and sine.
+    Hint: use np.linspace, np.cos, and np.sin
     
     @param:
-    omega (scalar): radial frequency, samples/second
-    N (scalar): duration of the tone, in samples
+    t_start (scalar): the starting time
+    t_end (scalar): the ending time
+    t_steps (scalar): length of t, x, and y
     
     @result:
-    x (array): N samples from the signal cos(omega*n)
+    t (array of length t_steps): time axis, t_start through t_end inclusive
+    x (array of length t_steps): cos(t)
+    y (array of length t_steps): sin(t)
     '''
-    x = np.zeros(N) # change this line
-    return x
+    t = np.linspace(t_start, t_end, t_steps)  # Generate the time axis using np.linspace
+    x = np.cos(t)  # Compute cos(t)
+    y = np.sin(t)  # Compute sin(t)
+    
+    return t, x, y
+
+# Testing the function
+(theta, cos, sin) = sine_and_cosine(0, np.pi, 20)
+f = plt.figure(figsize=(14, 4))
+s = f.subplots(1, 1)
+s.stem(theta, cos, 'r')
+s.stem(theta, sin, 'b')
+s.set_title('Sine and Cosine: Stem Plot', fontsize=24)
+s.set_xlabel('Theta (in radians)', fontsize=18)
+s.set_ylabel('sin(theta) and cos(theta)', fontsize=18)
+s.legend(['cosine', 'sine'], fontsize=18)
+
+plt.show()
+
 
